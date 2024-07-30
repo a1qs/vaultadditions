@@ -1,0 +1,8 @@
+{
+  "block.vaultadditions.globe_expander": "Globe Expander",
+  "item.vaultadditions.border_shard": "Border Shard",
+  "item.vaultadditions.inverted_border_shard": "Inverted Border Shard",
+  "key.vaultadditions.set_compass_position": "Set New Compass Position",
+  "key.category.vaultadditions": "Vault Additions",
+  "key.vaultadditions.toggle_compass_hud": "Toggle Vault Compass HUD"
+}
