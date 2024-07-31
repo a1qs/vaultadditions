@@ -22,9 +22,9 @@ public class BorderShard extends Item {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         if(pStack.getItem() == ModItems.BORDER_SHARD.get()) {
-            pTooltipComponents.add(new TextComponent("Increases the World Border by ").append(CommonConfigs.BORDER_SHARD_INCREASE.toString()).withStyle(ChatFormatting.YELLOW).append(" Blocks!"));
+            pTooltipComponents.add(new TextComponent("Increases the World Border by ").append(CommonConfigs.BORDER_SHARD_INCREASE.get().toString()).withStyle(ChatFormatting.YELLOW).append(" Blocks!"));
         } else {
-            pTooltipComponents.add(new TextComponent("Decreases the World Border by ").append(CommonConfigs.INVERTED_BORDER_SHARD_DECREASE.toString()).withStyle(ChatFormatting.RED).append(" Blocks!"));
+            pTooltipComponents.add(new TextComponent("Decreases the World Border by ").append(CommonConfigs.INVERTED_BORDER_SHARD_DECREASE.get().toString()).withStyle(ChatFormatting.RED).append(" Blocks!"));
         }
     }
 }
