@@ -9,6 +9,7 @@ import io.github.a1qs.vaultadditions.init.ModBlocks;
 import io.github.a1qs.vaultadditions.init.ModItems;
 import io.github.a1qs.vaultadditions.init.ModKeyBinds;
 import io.github.a1qs.vaultadditions.init.ModNetwork;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 
 @Mod(VaultAdditions.MOD_ID)
 public class VaultAdditions {
+
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final String MOD_ID = "vaultadditions";
 

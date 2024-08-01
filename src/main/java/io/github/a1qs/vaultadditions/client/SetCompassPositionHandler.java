@@ -6,6 +6,7 @@ import io.github.a1qs.vaultadditions.network.CompassTargetRequestPacket;
 import io.github.a1qs.vaultadditions.init.ModNetwork;
 import io.github.a1qs.vaultadditions.util.CurioUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,11 +48,14 @@ public class SetCompassPositionHandler {
         if (isKeyPressed && !targetSet) {
             long currentTime = System.currentTimeMillis();
             Minecraft minecraft = Minecraft.getInstance();
-            if (minecraft.player != null && CurioUtils.hasVaultCompass(minecraft.player)) {
-                playSoundWhileUsing(minecraft.player);
+            Player player = minecraft.player;
+            if (player != null && CurioUtils.hasVaultCompass(player)) {
+                if (player.getLevel().dimension().location() != ClientLevel.OVERWORLD.location() && player.getLevel().dimension().location() != ClientLevel.NETHER.location() && player.getLevel().dimension().location() != ClientLevel.END.location()) {
+                    playSoundWhileUsing(player);
+                }
             }
             if (currentTime - keyPressStartTime >= 2000) {
-                if (minecraft.player != null) {
+                if (player != null) {
                     ModNetwork.CHANNEL.sendToServer(new CompassTargetRequestPacket(minecraft.player.getUUID()));
                 }
                 targetSet = true;
