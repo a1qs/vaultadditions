@@ -14,7 +14,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 public class OnPlayerLogInEvent {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-
         Level level = event.getPlayer().getLevel();
         if(level instanceof ServerLevel serverLevel) {
             WorldBorderData data = DataManager.get(serverLevel);
