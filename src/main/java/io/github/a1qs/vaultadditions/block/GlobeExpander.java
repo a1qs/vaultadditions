@@ -1,6 +1,5 @@
 package io.github.a1qs.vaultadditions.block;
 
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.a1qs.vaultadditions.config.CommonConfigs;
 import io.github.a1qs.vaultadditions.data.DataManager;
 import io.github.a1qs.vaultadditions.data.WorldBorderData;
@@ -14,6 +13,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -64,14 +65,12 @@ public class GlobeExpander extends Block {
                 if(pLevel instanceof ServerLevel serverLevel) {
                     WorldBorderData data = DataManager.get(serverLevel);
                     if(pPlayer.getMainHandItem().getItem() == ModItems.BORDER_SHARD.get()) {
-
-
-
                         int borderShardIncrease = CommonConfigs.BORDER_SHARD_INCREASE.get();
                         double blocksExpanded = pPlayer.getMainHandItem().getCount() * borderShardIncrease;
-                        double newSize = border.getSize() + blocksExpanded * 2;
+                        double newSize = border.getSize() + blocksExpanded;
                         border.lerpSizeBetween(border.getSize(), newSize, 1000);
                         data.setWorldBorderSize(newSize);
+                        serverLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS,  0.75F, 0.9F);
 
                         if(!pPlayer.getAbilities().instabuild) {
                             pPlayer.getMainHandItem().setCount(0);
@@ -79,10 +78,16 @@ public class GlobeExpander extends Block {
                         srv.getPlayerList().broadcastMessage(new TextComponent( "[World Border] " + pPlayer.getDisplayName().getString() +  " expanded the World border by " + blocksExpanded + " Blocks!").withStyle(ChatFormatting.YELLOW), ChatType.CHAT, Util.NIL_UUID);
                     } else {
                         double blocksRemoved = (double) pPlayer.getMainHandItem().getCount() * CommonConfigs.INVERTED_BORDER_SHARD_DECREASE.get();
-                        double newSize = border.getSize() + blocksRemoved * 2;
+                        double newSize = border.getSize() + blocksRemoved;
                         if(newSize > 5) {
                             border.lerpSizeBetween(border.getSize(), newSize, 1000);
                             data.setWorldBorderSize(newSize);
+                            serverLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS,  0.75F, 0.9F);
+
+                            if(!pPlayer.getAbilities().instabuild) {
+                                pPlayer.getMainHandItem().setCount(0);
+                            }
+                            srv.getPlayerList().broadcastMessage(new TextComponent( "[World Border] " + pPlayer.getDisplayName().getString() +  " shrunk the World border by " + blocksRemoved + " Blocks!").withStyle(ChatFormatting.RED), ChatType.CHAT, Util.NIL_UUID);
 
                         } else {
                             srv.getPlayerList().broadcastMessage(new TextComponent( "[World Border] " + pPlayer.getDisplayName().getString() +  " attempted to shrink the border to less than 5 Blocks! ").withStyle(ChatFormatting.RED), ChatType.CHAT, Util.NIL_UUID);
