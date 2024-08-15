@@ -1,5 +1,6 @@
 package io.github.a1qs.vaultadditions.config;
 
+import iskallia.vault.block.entity.AlchemyArchiveTileEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonConfigs {
@@ -12,9 +13,8 @@ public class CommonConfigs {
     public static final ForgeConfigSpec.ConfigValue<Integer> VAULT_COMPLETION_GRANT_BORDER_SHARD_AMOUNT_MIN;
     public static final ForgeConfigSpec.ConfigValue<Integer> VAULT_COMPLETION_GRANT_BORDER_SHARD_AMOUNT_MAX;
 
-
     static {
-        BUILDER.push("VaultAdditions Common config");
+        BUILDER.push("VaultAdditions Common Configs");
 
 
         BORDER_SHARD_INCREASE = BUILDER.comment("Modify the amount of blocks the Border Shard increases with its usage")

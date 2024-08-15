@@ -3,6 +3,7 @@ package io.github.a1qs.vaultadditions.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.a1qs.vaultadditions.VaultAdditions;
+import io.github.a1qs.vaultadditions.config.ClientConfigs;
 import io.github.a1qs.vaultadditions.init.ModKeyBinds;
 import io.github.a1qs.vaultadditions.util.CurioUtils;
 import iskallia.vault.init.ModItems;
@@ -48,9 +49,11 @@ public class RenderVaultCompassHud {
 
         int screenWidth = minecraft.getWindow().getGuiScaledWidth();
         int screenHeight = minecraft.getWindow().getGuiScaledHeight();
+        int xOffset = ClientConfigs.COMPASS_X_OFFSET.get();
+        int yOffset = ClientConfigs.COMPASS_Y_OFFSET.get();
 
-        int x = screenWidth/2 - 8;
-        int y = screenHeight - 52;
+        int x = screenWidth/2 - 8 + xOffset;
+        int y = screenHeight - 52 + yOffset;
 
         poseStack.pushPose();
         RenderSystem.setShaderTexture(0, itemRenderer.getItemModelShaper().getItemModel(compass).getParticleIcon().getName());
