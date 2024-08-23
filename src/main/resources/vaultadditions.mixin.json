@@ -8,5 +8,8 @@
     "MixinAwardCrateObjective",
     "MixinModifierDiscoveryTileEntity"
   ],
-  "refmap": "vaultadditions.mixin-refmap.json"
+  "refmap": "vaultadditions.mixin-refmap.json",
+  "client": [
+    "MixinScreen"
+  ]
 }
