@@ -38,7 +38,7 @@ public class VaultAdditions {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfigs.SPEC, "vaultadditions-common.toml");
 
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.addListener(OnPlayerLogInEvent::onPlayerLogin);
+        MinecraftForge.EVENT_BUS.addListener(OnPlayerLogInEvent::restoreBorderValue);
     }
 
 
