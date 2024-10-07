@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "vaultadditions:item/border_shard"
+    "layer0": "the_vault:item/wutodic_gemstone"
   }
 }

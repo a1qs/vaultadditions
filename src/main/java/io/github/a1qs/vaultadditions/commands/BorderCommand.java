@@ -3,7 +3,6 @@ package io.github.a1qs.vaultadditions.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import io.github.a1qs.vaultadditions.data.DataManager;
 import io.github.a1qs.vaultadditions.data.WorldBorderData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -29,7 +28,7 @@ public class BorderCommand {
     private int setWorldBorder(CommandContext<CommandSourceStack> context) {
         double diameter = DoubleArgumentType.getDouble(context, "diameter");
         WorldBorder border = context.getSource().getLevel().getWorldBorder();
-        WorldBorderData data = DataManager.get(context.getSource().getLevel());
+        WorldBorderData data = WorldBorderData.get(context.getSource().getLevel());
         border.setSize(diameter);
 
         MutableComponent cmp0 = new TextComponent(String.valueOf(diameter)).withStyle(ChatFormatting.YELLOW);

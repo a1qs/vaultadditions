@@ -1,7 +1,6 @@
 package io.github.a1qs.vaultadditions.events;
 
 import io.github.a1qs.vaultadditions.VaultAdditions;
-import io.github.a1qs.vaultadditions.data.DataManager;
 import io.github.a1qs.vaultadditions.data.WorldBorderData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -16,7 +15,7 @@ public class OnPlayerLogInEvent {
     public static void restoreBorderValue(PlayerEvent.PlayerLoggedInEvent event) {
         Level level = event.getPlayer().getLevel();
         if (level instanceof ServerLevel serverLevel) {
-            WorldBorderData data = DataManager.get(serverLevel);
+            WorldBorderData data = WorldBorderData.get(serverLevel);
             MinecraftServer srv = ServerLifecycleHooks.getCurrentServer();
             WorldBorder border = srv.overworld().getWorldBorder();
             if (data.getWorldBorderSize() != border.getSize() && data.getWorldBorderSize() != 0) {

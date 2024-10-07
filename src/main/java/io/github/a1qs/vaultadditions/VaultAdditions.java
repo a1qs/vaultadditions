@@ -1,15 +1,13 @@
 package io.github.a1qs.vaultadditions;
 
 import com.mojang.logging.LogUtils;
-import io.github.a1qs.vaultadditions.client.RenderVaultCompassHud;
-import io.github.a1qs.vaultadditions.client.SetCompassPositionHandler;
-import io.github.a1qs.vaultadditions.config.ClientConfigs;
+import io.github.a1qs.vaultadditions.block.blockentity.render.GlobeExpanderEntityRenderer;
 import io.github.a1qs.vaultadditions.config.CommonConfigs;
 import io.github.a1qs.vaultadditions.events.OnPlayerLogInEvent;
+import io.github.a1qs.vaultadditions.init.ModBlockEntities;
 import io.github.a1qs.vaultadditions.init.ModBlocks;
 import io.github.a1qs.vaultadditions.init.ModItems;
-import io.github.a1qs.vaultadditions.init.ModKeyBinds;
-import io.github.a1qs.vaultadditions.init.ModNetwork;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -30,11 +28,11 @@ public class VaultAdditions {
 
         ModItems.ITEMS.register(eventBus);
         ModBlocks.BLOCKS.register(eventBus);
+        ModBlockEntities.register(eventBus);
 
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(this::clientSetup);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, "vaultadditions-client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfigs.SPEC, "vaultadditions-common.toml");
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -43,12 +41,9 @@ public class VaultAdditions {
 
 
     public void commonSetup(final FMLCommonSetupEvent event) {
-        ModNetwork.register();
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.register(new SetCompassPositionHandler());
-        MinecraftForge.EVENT_BUS.register(new RenderVaultCompassHud());
-        ModKeyBinds.registerKeyBinds();
+        BlockEntityRenderers.register(ModBlockEntities.GLOBE_EXPANDER_ENTITY.get(), GlobeExpanderEntityRenderer::new);
     }
 }

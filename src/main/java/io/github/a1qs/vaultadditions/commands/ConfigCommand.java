@@ -17,38 +17,15 @@ public class ConfigCommand {
                                         .executes(this::setShardIncrease)
                                 )
                         )
-                        .then(Commands.literal("setInvertedBorderShardDecreases")
-                                .then(Commands.argument("decreaseAmount", IntegerArgumentType.integer())
-                                        .executes(this::setShardDecrease)
-                                )
-                        )
-                        .then(Commands.literal("setCompletionBorderShardGrantAmount")
-                                .then(Commands.argument("min", IntegerArgumentType.integer())
-                                        .then(Commands.argument("max", IntegerArgumentType.integer())
-                                                .executes(this::setCompletionShardAmount)
-                                        )
-
-                                )
-                        )
                 )
         );
     }
 
     private int setShardIncrease(CommandContext<CommandSourceStack> context) {
-        CommonConfigs.BORDER_SHARD_INCREASE.set(IntegerArgumentType.getInteger(context, "increaseAmount"));
+        CommonConfigs.BORDER_GEMSTONE_INCREASE.set(IntegerArgumentType.getInteger(context, "increaseAmount"));
         return 0;
     }
 
-    private int setShardDecrease(CommandContext<CommandSourceStack> context) {
-        CommonConfigs.INVERTED_BORDER_SHARD_DECREASE.set(IntegerArgumentType.getInteger(context, "decreaseAmount"));
-        return 0;
-    }
-
-    private int setCompletionShardAmount(CommandContext<CommandSourceStack> context) {
-        CommonConfigs.VAULT_COMPLETION_GRANT_BORDER_SHARD_AMOUNT_MIN.set(IntegerArgumentType.getInteger(context, "min"));
-        CommonConfigs.VAULT_COMPLETION_GRANT_BORDER_SHARD_AMOUNT_MAX.set(IntegerArgumentType.getInteger(context, "max"));
-        return 0;
-    }
 
 
     public int getRequiredPermissionLevel() {

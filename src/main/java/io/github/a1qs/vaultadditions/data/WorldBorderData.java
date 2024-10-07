@@ -1,10 +1,12 @@
 package io.github.a1qs.vaultadditions.data;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
 public class WorldBorderData extends SavedData {
+    private static final String FILE_NAME = "vaultadditions_data";
     private double worldBorderSize;
 
     public WorldBorderData() {
@@ -30,6 +32,10 @@ public class WorldBorderData extends SavedData {
     public void setWorldBorderSize(double size) {
         this.worldBorderSize = size;
         setDirty();
+    }
+
+    public static WorldBorderData get(ServerLevel level) {
+        return level.getDataStorage().computeIfAbsent(WorldBorderData::load, WorldBorderData::new, FILE_NAME);
     }
 
 
