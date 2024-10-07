@@ -7,9 +7,7 @@ import io.github.a1qs.vaultadditions.init.ModBlockEntities;
 import io.github.a1qs.vaultadditions.init.ModItems;
 import io.github.a1qs.vaultadditions.item.BorderGemstone;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
@@ -24,10 +22,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -65,6 +61,8 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
+
+
         if(!(pPlayer.getMainHandItem().getItem() instanceof BorderGemstone && pHand == InteractionHand.MAIN_HAND)) {
             return InteractionResult.PASS;
         }
@@ -80,6 +78,9 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
         BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
 
         if(blockEntity instanceof GlobeExpanderBlockEntity expanderEntity) {
+            if(expanderEntity.shouldAnimate()) {
+                return InteractionResult.PASS;
+            }
             if(pPlayer.getMainHandItem().getItem() == ModItems.BORDER_GEMSTONE.get()) {
                 int borderShardIncrease = CommonConfigs.BORDER_GEMSTONE_INCREASE.get();
                 double blocksExpanded = pPlayer.getMainHandItem().getCount() * borderShardIncrease;
@@ -96,7 +97,9 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
                 expanderEntity.setChanged();
                 pLevel.sendBlockUpdated(pPos, expanderEntity.getBlockState(), expanderEntity.getBlockState(), 3);
 
-                srv.getPlayerList().broadcastMessage(new TextComponent("[World Border] " + pPlayer.getDisplayName().getString() + " expanded the World border by " + blocksExpanded + " Blocks!").withStyle(ChatFormatting.YELLOW), ChatType.CHAT, Util.NIL_UUID);
+
+                //srv.getPlayerList().broadcastMessage(new TextComponent("[World Border] " + pPlayer.getDisplayName().getString() + " expanded the World border by " + blocksExpanded + " Blocks!").withStyle(ChatFormatting.YELLOW), ChatType.CHAT, Util.NIL_UUID);
+                expanderEntity.setBroadcastMessage(pPlayer.getDisplayName().getString(), blocksExpanded);
             }
         }
 
