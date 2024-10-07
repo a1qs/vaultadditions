@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 public class GlobeExpanderBlockEntity extends BlockEntity {
     public int ticksSpinning = 0;  // Track the number of ticks the item has been spinning
     public int ticksSpinningOld = 0;  // Previous tick count for smooth interpolation
-    public final int maxSpinTicks = 160;  // Max time the item should spin for (example)
+    public final int maxSpinTicks = 100;  // Max time the item should spin for (example)
     private boolean isAnimating = false;  // Track if the block should animate
 
     public GlobeExpanderBlockEntity(BlockPos pos, BlockState state) {
@@ -33,13 +33,23 @@ public class GlobeExpanderBlockEntity extends BlockEntity {
             if (expanderEntity.isAnimating && expanderEntity.ticksSpinning < expanderEntity.maxSpinTicks) {
                 expanderEntity.ticksSpinningOld = expanderEntity.ticksSpinning;
                 expanderEntity.ticksSpinning++;
-                System.out.println("Spinning: " + expanderEntity.ticksSpinning);  // Debug log
-            }  else if (expanderEntity.ticksSpinning >= expanderEntity.maxSpinTicks) {
-                expanderEntity.stopAnimation();
-                System.out.println("Stopping animation");  // Debug log
             }
         }
         //Minecraft.getInstance().getSoundManager().play(SoundEvents.END_PORTAL_FRAME_FILL);
+    }
+
+    public static <T extends BlockEntity> void serverTick(Level world, BlockPos pos, BlockState state, T tile) {
+        if (tile instanceof GlobeExpanderBlockEntity expanderEntity) {
+            if (expanderEntity.isAnimating && expanderEntity.ticksSpinning < expanderEntity.maxSpinTicks) {
+                expanderEntity.ticksSpinningOld = expanderEntity.ticksSpinning;
+                expanderEntity.ticksSpinning++;
+                expanderEntity.setChanged();  // Mark that the entity has been updated
+            } else if (expanderEntity.ticksSpinning >= expanderEntity.maxSpinTicks) {
+                expanderEntity.stopAnimation();  // Stop animation on the server
+                world.playSound(null, pos, SoundEvents.ENDER_EYE_DEATH, SoundSource.BLOCKS, 1.0f, 1.25f);
+
+            }
+        }
     }
 
 
@@ -52,6 +62,8 @@ public class GlobeExpanderBlockEntity extends BlockEntity {
 
     public void stopAnimation() {
         this.isAnimating = false;  // Stop the animation
+        this.ticksSpinning = 0;
+        this.ticksSpinningOld = 0;
 
         // Mark the block entity as changed to save data to NBT
         this.setChanged();

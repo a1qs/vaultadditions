@@ -109,7 +109,7 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
         if (pLevel.isClientSide && pBlockEntityType == ModBlockEntities.GLOBE_EXPANDER_ENTITY.get()) {
             return GlobeExpanderBlockEntity::clientTick;
         }
-        return null;
+        return pLevel.isClientSide() ? GlobeExpanderBlockEntity::clientTick : GlobeExpanderBlockEntity::serverTick;
     }
 
     @Nullable
