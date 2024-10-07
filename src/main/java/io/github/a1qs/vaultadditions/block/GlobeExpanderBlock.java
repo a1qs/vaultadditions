@@ -51,7 +51,7 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
     @Override
     public void appendHoverText(@NotNull ItemStack pStack, @javax.annotation.Nullable BlockGetter pLevel, List<Component> pTooltip, @NotNull TooltipFlag pFlag) {
         pTooltip.add(new TextComponent("Upon clicking with a Border Shard:").withStyle(ChatFormatting.YELLOW));
-        pTooltip.add(new TextComponent("Expands the World Border by a configured amount").withStyle(ChatFormatting.YELLOW));
+        pTooltip.add(new TextComponent("Expands the World Border by " + CommonConfigs.BORDER_GEMSTONE_INCREASE.get() + " Blocks").withStyle(ChatFormatting.YELLOW));
     }
 
     @Override
