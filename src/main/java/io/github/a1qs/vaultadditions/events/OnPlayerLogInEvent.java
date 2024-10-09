@@ -11,17 +11,17 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class OnPlayerLogInEvent {
-    @SubscribeEvent
-    public static void restoreBorderValue(PlayerEvent.PlayerLoggedInEvent event) {
-        Level level = event.getPlayer().getLevel();
-        if (level instanceof ServerLevel serverLevel) {
-            WorldBorderData data = WorldBorderData.get(serverLevel);
-            MinecraftServer srv = ServerLifecycleHooks.getCurrentServer();
-            WorldBorder border = srv.overworld().getWorldBorder();
-            if (data.getWorldBorderSize() != border.getSize() && data.getWorldBorderSize() != 0) {
-                border.setSize(data.getWorldBorderSize());
-                VaultAdditions.LOGGER.info("Reset Border to its last saved value!");
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public static void restoreBorderValue(PlayerEvent.PlayerLoggedInEvent event) {
+//        Level level = event.getPlayer().getLevel();
+//        if (level instanceof ServerLevel serverLevel) {
+//            WorldBorderData data = WorldBorderData.get(serverLevel);
+//            MinecraftServer srv = ServerLifecycleHooks.getCurrentServer();
+//            WorldBorder border = srv.overworld().getWorldBorder();
+//            if (data.getWorldBorderSize() != border.getSize() && data.getWorldBorderSize() != 0) {
+//                border.setSize(data.getWorldBorderSize());
+//                VaultAdditions.LOGGER.info("Reset Border to its last saved value!");
+//            }
+//        }
+//    }
 }
