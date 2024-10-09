@@ -36,10 +36,13 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class GlobeExpanderBlock extends BaseEntityBlock {
     private static final VoxelShape SHAPE = Shapes.box(.1, .1, .1, .9, .9, .9);
+
 
     public GlobeExpanderBlock(Properties properties) {
         super(properties);
@@ -61,34 +64,43 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-
-
         if(!(pPlayer.getMainHandItem().getItem() instanceof BorderGemstone && pHand == InteractionHand.MAIN_HAND)) {
-            return InteractionResult.PASS;
-        }
-
-        if (!(pLevel instanceof ServerLevel serverLevel)) {
             return InteractionResult.PASS;
         }
 
 
         MinecraftServer srv = ServerLifecycleHooks.getCurrentServer();
-        WorldBorder border = srv.overworld().getWorldBorder();
-        WorldBorderData data = WorldBorderData.get(serverLevel);
         BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+
+        List<ServerLevel> dimensions = Arrays.asList(
+                srv.getLevel(Level.OVERWORLD),
+                srv.getLevel(Level.NETHER),
+                srv.getLevel(Level.END)
+        );
+
+        List<ServerLevel> validDimensions = dimensions.stream()
+                .filter(Objects::nonNull)
+                .toList();
+
 
         if(blockEntity instanceof GlobeExpanderBlockEntity expanderEntity) {
             if(expanderEntity.shouldAnimate()) {
                 return InteractionResult.PASS;
             }
+
             if(pPlayer.getMainHandItem().getItem() == ModItems.BORDER_GEMSTONE.get()) {
                 int borderShardIncrease = CommonConfigs.BORDER_GEMSTONE_INCREASE.get();
-                double blocksExpanded = pPlayer.getMainHandItem().getCount() * borderShardIncrease;
-                double newSize = border.getSize() + blocksExpanded;
-                border.lerpSizeBetween(border.getSize(), newSize, 1000);
-                data.setWorldBorderSize(newSize);
-                serverLevel.playSound(null, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 0.75F, 0.9F);
+                int handCount = pPlayer.getMainHandItem().getCount();
 
+                for (ServerLevel dimension : validDimensions) {
+                    WorldBorder dimensionBorder = dimension.getWorldBorder();
+                    WorldBorderData data = WorldBorderData.get(dimension);
+                    double blocksExpanded = calculateDimensionSpecificExpansion(dimension, borderShardIncrease, handCount);
+                    double newSize = dimensionBorder.getSize() + blocksExpanded;
+                    dimensionBorder.lerpSizeBetween(dimensionBorder.getSize(), newSize, 1000);
+                    data.setWorldBorderSize(newSize);
+                    Objects.requireNonNull(expanderEntity.getLevel()).playSound(null, pPos, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 0.75F, 0.9F);
+                }
                 if (!pPlayer.getAbilities().instabuild) {
                     pPlayer.getMainHandItem().setCount(0);
                 }
@@ -98,8 +110,7 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
                 pLevel.sendBlockUpdated(pPos, expanderEntity.getBlockState(), expanderEntity.getBlockState(), 3);
 
 
-                //srv.getPlayerList().broadcastMessage(new TextComponent("[World Border] " + pPlayer.getDisplayName().getString() + " expanded the World border by " + blocksExpanded + " Blocks!").withStyle(ChatFormatting.YELLOW), ChatType.CHAT, Util.NIL_UUID);
-                expanderEntity.setBroadcastMessage(pPlayer.getDisplayName().getString(), blocksExpanded);
+                expanderEntity.setBroadcastMessage(pPlayer.getDisplayName().getString(), borderShardIncrease * handCount);
             }
         }
 
@@ -124,6 +135,17 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
     @Override
     public RenderShape getRenderShape(BlockState pState) {
         return RenderShape.MODEL;
+    }
+
+    private double calculateDimensionSpecificExpansion(ServerLevel dimension, int baseIncrease, int itemCount) {
+        if (dimension.dimension() == Level.OVERWORLD) {
+            return itemCount * baseIncrease;  // Default increase in Overworld
+        } else if (dimension.dimension() == Level.NETHER) {
+            return itemCount * baseIncrease * CommonConfigs.NETHER_BORDER_INCREASE.get();  // Half the increase in the Nether
+        } else if (dimension.dimension() == Level.END) {
+            return itemCount * baseIncrease * CommonConfigs.END_BORDER_INCREASE.get();  // Double the increase in the End
+        }
+        return itemCount * baseIncrease;  // Default case for other dimensions
     }
 
 }
