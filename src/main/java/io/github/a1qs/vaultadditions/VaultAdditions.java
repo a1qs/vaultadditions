@@ -3,12 +3,9 @@ package io.github.a1qs.vaultadditions;
 import com.mojang.logging.LogUtils;
 import io.github.a1qs.vaultadditions.block.blockentity.render.GlobeExpanderEntityRenderer;
 import io.github.a1qs.vaultadditions.config.CommonConfigs;
-import io.github.a1qs.vaultadditions.gui.screen.TreasureKeyRingScreen;
 import io.github.a1qs.vaultadditions.init.ModBlockEntities;
 import io.github.a1qs.vaultadditions.init.ModBlocks;
-import io.github.a1qs.vaultadditions.init.ModContainers;
 import io.github.a1qs.vaultadditions.init.ModItems;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,9 +30,7 @@ public class VaultAdditions {
 
         ModItems.ITEMS.register(eventBus);
         ModBlocks.BLOCKS.register(eventBus);
-        ModContainers.CONTAINERS.register(eventBus);
-        ModBlockEntities.BLOCK_ENTITIES.register(eventBus);
-
+        ModBlockEntities.register(eventBus);
 
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(this::clientSetup);
@@ -55,6 +50,5 @@ public class VaultAdditions {
 
     private void clientSetup(final FMLClientSetupEvent event) {
         BlockEntityRenderers.register(ModBlockEntities.GLOBE_EXPANDER_ENTITY.get(), GlobeExpanderEntityRenderer::new);
-        MenuScreens.register(ModContainers.TREASURE_KEY_RING_CONTAINER.get(), TreasureKeyRingScreen::new);
     }
 }

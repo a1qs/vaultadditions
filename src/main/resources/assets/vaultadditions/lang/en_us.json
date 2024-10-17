@@ -1,6 +1,4 @@
 {
   "block.vaultadditions.globe_expander": "Globe Expander",
-  "item.vaultadditions.border_gemstone": "Border Gemstone",
-  "container.vaultadditions.treasure_key_ring": "Key Ring",
-  "tooltip.vaultadditions.treasure_key_ring": "Automatically activates Treasure Doors"
+  "item.vaultadditions.border_gemstone": "Border Gemstone"
 }
