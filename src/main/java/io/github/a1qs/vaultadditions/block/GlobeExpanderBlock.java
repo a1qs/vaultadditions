@@ -2,7 +2,6 @@ package io.github.a1qs.vaultadditions.block;
 
 import io.github.a1qs.vaultadditions.block.blockentity.GlobeExpanderBlockEntity;
 import io.github.a1qs.vaultadditions.config.CommonConfigs;
-import io.github.a1qs.vaultadditions.data.WorldBorderData;
 import io.github.a1qs.vaultadditions.init.ModBlockEntities;
 import io.github.a1qs.vaultadditions.init.ModItems;
 import io.github.a1qs.vaultadditions.item.BorderGemstone;
@@ -65,7 +64,9 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
         }
 
         if(!(pPlayer.getMainHandItem().getItem() instanceof BorderGemstone && pHand == InteractionHand.MAIN_HAND)) {
-            return InteractionResult.PASS;
+            double worldBorderSize = pPlayer.getLevel().getWorldBorder().getSize();
+            pPlayer.displayClientMessage(new TextComponent("Current World Border size: " + worldBorderSize + " | " + worldBorderSize/2 + " in each direction."), true);
+            return InteractionResult.SUCCESS;
         }
 
 
@@ -94,11 +95,11 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
 
                 for (ServerLevel dimension : validDimensions) {
                     WorldBorder dimensionBorder = dimension.getWorldBorder();
-                    WorldBorderData data = WorldBorderData.get(dimension);
+
                     double blocksExpanded = calculateDimensionSpecificExpansion(dimension, borderShardIncrease, handCount);
                     double newSize = dimensionBorder.getSize() + blocksExpanded;
                     dimensionBorder.lerpSizeBetween(dimensionBorder.getSize(), newSize, 1000);
-                    data.setWorldBorderSize(newSize);
+
                     Objects.requireNonNull(expanderEntity.getLevel()).playSound(null, pPos, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 0.75F, 0.9F);
                 }
                 if (!pPlayer.getAbilities().instabuild) {
