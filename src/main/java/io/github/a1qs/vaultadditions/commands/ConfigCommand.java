@@ -17,6 +17,16 @@ public class ConfigCommand {
                                         .executes(this::setShardIncrease)
                                 )
                         )
+                        .then(Commands.literal("setNetherBorderMultiplier")
+                                .then(Commands.argument("increaseAmount", IntegerArgumentType.integer())
+                                        .executes(this::setNetherBorderMultiplier)
+                                )
+                        )
+                        .then(Commands.literal("setEndBorderMultiplier")
+                                .then(Commands.argument("increaseAmount", IntegerArgumentType.integer())
+                                        .executes(this::setEndBorderMultiplier)
+                                )
+                        )
                 )
         );
     }
@@ -26,7 +36,15 @@ public class ConfigCommand {
         return 0;
     }
 
+    private int setNetherBorderMultiplier(CommandContext<CommandSourceStack> context) {
+        CommonConfigs.NETHER_BORDER_INCREASE.set(IntegerArgumentType.getInteger(context, "increaseAmount"));
+        return 0;
+    }
 
+    private int setEndBorderMultiplier(CommandContext<CommandSourceStack> context) {
+        CommonConfigs.END_BORDER_INCREASE.set(IntegerArgumentType.getInteger(context, "increaseAmount"));
+        return 0;
+    }
 
     public int getRequiredPermissionLevel() {
         return 2;
