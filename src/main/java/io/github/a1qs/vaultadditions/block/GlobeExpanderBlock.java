@@ -1,10 +1,12 @@
 package io.github.a1qs.vaultadditions.block;
 
+import io.github.a1qs.vaultadditions.VaultAdditions;
 import io.github.a1qs.vaultadditions.block.blockentity.GlobeExpanderBlockEntity;
 import io.github.a1qs.vaultadditions.config.CommonConfigs;
 import io.github.a1qs.vaultadditions.init.ModBlockEntities;
 import io.github.a1qs.vaultadditions.init.ModItems;
 import io.github.a1qs.vaultadditions.item.BorderGemstone;
+import io.github.a1qs.vaultadditions.util.DateCheck;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -63,10 +65,14 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-        if(!(pPlayer.getMainHandItem().getItem() instanceof BorderGemstone && pHand == InteractionHand.MAIN_HAND)) {
+        if(!(pPlayer.getMainHandItem().getItem() instanceof BorderGemstone)) {
             double worldBorderSize = pPlayer.getLevel().getWorldBorder().getSize();
-            pPlayer.displayClientMessage(new TextComponent("Current World Border size: " + worldBorderSize + " | " + worldBorderSize/2 + " in each direction."), true);
+            pPlayer.displayClientMessage(new TextComponent("Current World Border size Diameter: " + worldBorderSize), true);
             return InteractionResult.SUCCESS;
+        }
+
+        if(pHand != InteractionHand.MAIN_HAND) {
+            return InteractionResult.PASS;
         }
 
 
@@ -89,6 +95,11 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
                 return InteractionResult.PASS;
             }
 
+            if(DateCheck.pastDate() && CommonConfigs.LIMIT_TIME_FOR_EXPANSION.get()) {
+                pPlayer.displayClientMessage(new TextComponent("Nothing happened...").withStyle(ChatFormatting.RED), true);
+                return InteractionResult.PASS;
+            }
+
             if(pPlayer.getMainHandItem().getItem() == ModItems.BORDER_GEMSTONE.get()) {
                 int borderShardIncrease = CommonConfigs.BORDER_GEMSTONE_INCREASE.get();
                 int handCount = pPlayer.getMainHandItem().getCount();
@@ -98,6 +109,11 @@ public class GlobeExpanderBlock extends BaseEntityBlock {
 
                     double blocksExpanded = calculateDimensionSpecificExpansion(dimension, borderShardIncrease, handCount);
                     double newSize = dimensionBorder.getSize() + blocksExpanded;
+                    if(newSize >= 5.9999968E7) {
+                        VaultAdditions.LOGGER.error("Cannot increase border in {}, size would be {} but the max allowed value is {}", dimension.dimension().getRegistryName(), newSize, 5.9999968E7);
+                        pPlayer.displayClientMessage(new TextComponent("Please report this to a server admin, see logs for more information.").withStyle(ChatFormatting.RED), true);
+                        return InteractionResult.FAIL;
+                    }
                     dimensionBorder.lerpSizeBetween(dimensionBorder.getSize(), newSize, 1000);
 
                     Objects.requireNonNull(expanderEntity.getLevel()).playSound(null, pPos, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 0.75F, 0.9F);
