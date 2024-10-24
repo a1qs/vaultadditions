@@ -3,6 +3,7 @@ package io.github.a1qs.vaultadditions;
 import com.mojang.logging.LogUtils;
 import io.github.a1qs.vaultadditions.block.blockentity.render.GlobeExpanderEntityRenderer;
 import io.github.a1qs.vaultadditions.config.CommonConfigs;
+import io.github.a1qs.vaultadditions.events.OnPlayerLogInEvent;
 import io.github.a1qs.vaultadditions.init.ModBlockEntities;
 import io.github.a1qs.vaultadditions.init.ModBlocks;
 import io.github.a1qs.vaultadditions.init.ModItems;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 public class VaultAdditions {
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final String MOD_ID = "vaultadditions";
+    public static boolean isWorldBorderFixerLoaded = ModList.get().isLoaded("worldborderfixer");
 
     public VaultAdditions() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -38,9 +40,10 @@ public class VaultAdditions {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfigs.SPEC, "vaultadditions-common.toml");
 
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(OnPlayerLogInEvent::onPlayerLogin);
 
         if(FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
-            if(!ModList.get().isLoaded("worldborderfixer")) LOGGER.error("Worldborderfixer is not installed. Please install 'Multi World Borders Unofficial'!");
+            if(!isWorldBorderFixerLoaded) LOGGER.error("Worldborderfixer is not installed. Please install 'Multi World Borders Unofficial'!");
         }
     }
 
